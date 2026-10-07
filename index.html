@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#1a1c2c" />
+  <meta name="description" content="West Dev Flappy Bird — a pixel-art arcade competition." />
+  <title>WEST DEV — FLAPPY BIRD</title>
+  <link rel="icon" href="assets/sprites/favicon.svg" type="image/svg+xml" />
+
+  <link rel="stylesheet" href="css/font.css" />
+  <link rel="stylesheet" href="css/reset.css" />
+  <link rel="stylesheet" href="css/variables.css" />
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/menu.css" />
+  <link rel="stylesheet" href="css/leaderboard.css" />
+  <link rel="stylesheet" href="css/game.css" />
+</head>
+<body>
+  <canvas id="game-canvas" class="game-canvas" aria-label="Game area"></canvas>
+
+  <div id="app" class="app">
+    <!-- ============ INTRO ============ -->
+    <section id="intro" class="screen intro" hidden aria-label="Intro">
+      <div class="intro__bar" aria-hidden="true"></div>
+      <p class="intro__brand">WEST <b>DEV</b></p>
+      <p class="intro__presents">PRESENTS</p>
+      <p class="intro__title t-outline">FLAPPY BIRD</p>
+      <div class="intro__bar" aria-hidden="true"></div>
+      <div class="intro__bird" id="intro-bird" aria-hidden="true"></div>
+      <p class="intro__skip">CLICK TO SKIP</p>
+    </section>
+
+    <!-- ============ MAIN MENU ============ -->
+    <section id="menu" class="screen menu" hidden>
+      <div class="menu__inner">
+        <header class="brand">
+          <button class="brand__logo" id="brand-logo" type="button" aria-label="West Dev">
+            <span class="brand__logo-w">W</span><span class="brand__logo-d">D</span>
+            <i class="brand__blink" aria-hidden="true"></i>
+          </button>
+          <div class="brand__text">
+            <p class="brand__club">WEST DEV</p>
+            <h1 class="brand__title t-outline">FLAPPY BIRD</h1>
+          </div>
+          <div class="brand__bird" id="brand-bird" aria-hidden="true"></div>
+        </header>
+
+        <main class="menu__grid">
+          <div class="menu__col menu__col--left">
+            <section class="panel player-panel" id="player-panel" aria-live="polite"></section>
+            <section class="panel search" id="search" aria-label="Search player"></section>
+          </div>
+          <div class="menu__col menu__col--right">
+            <section class="champion" id="champion" aria-live="polite"></section>
+            <section class="panel leaderboard" id="leaderboard" aria-label="Top 10"></section>
+          </div>
+        </main>
+
+        <footer class="menu__footer">
+          <button id="sound-toggle" class="btn btn--small btn--ghost" type="button"></button>
+          <p class="menu__credit">A WEST DEV GAME</p>
+          <button id="fullscreen-toggle" class="btn btn--small btn--ghost" type="button"></button>
+        </footer>
+      </div>
+    </section>
+
+    <!-- ============ HUD ============ -->
+    <section id="hud" class="hud" hidden>
+      <div class="hud__player">
+        <span class="hud__name" id="hud-name"></span>
+        <span id="hud-hearts"></span>
+      </div>
+      <div class="hud__score">
+        <span class="hud__label t-outline">SCORE</span>
+        <span class="hud__value t-outline" id="hud-score">0</span>
+        <span class="hud__best t-outline" id="hud-best"></span>
+      </div>
+      <div class="hud__record t-outline" id="hud-record" hidden>&#9733; NEW RECORD &#9733;</div>
+      <div class="hud__ready" id="hud-ready">
+        <p class="hud__ready-title t-outline">GET READY!</p>
+        <p class="hud__ready-hint t-outline">PRESS SPACE / CLICK / TAP</p>
+      </div>
+      <div class="hud__fps" id="hud-fps" hidden></div>
+    </section>
+
+    <!-- ============ GAME OVER ============ -->
+    <section id="gameover" class="overlay gameover" hidden>
+      <div class="panel dialog gameover__panel" id="gameover-panel" role="dialog" aria-modal="true" aria-label="Game over"></div>
+    </section>
+
+    <!-- ============ CELEBRATION (new champion) ============ -->
+    <section id="celebration" class="celebration" hidden aria-live="assertive"></section>
+
+    <!-- ============ ADMIN ============ -->
+    <section id="admin" class="overlay overlay--top" hidden>
+      <div class="panel dialog admin" id="admin-panel" role="dialog" aria-modal="true" aria-label="Admin"></div>
+    </section>
+
+    <!-- ============ CONFIRM DIALOG ============ -->
+    <section id="dialog" class="overlay overlay--top" hidden>
+      <div class="panel dialog" id="dialog-panel" role="alertdialog" aria-modal="true"></div>
+    </section>
+
+    <!-- ============ FATAL / CORRUPTED DATA ============ -->
+    <section id="fatal" class="overlay overlay--top" hidden>
+      <div class="panel dialog" id="fatal-panel" role="alertdialog" aria-modal="true"></div>
+    </section>
+
+    <div id="toast" class="toast" hidden role="status"></div>
+    <input id="import-file" type="file" accept="application/json,.json" hidden />
+  </div>
+
+  <noscript>
+    <p style="position:fixed;inset:0;display:grid;place-items:center;color:#ffcd75;background:#1a1c2c;font-family:monospace">
+      WEST DEV FLAPPY BIRD needs JavaScript enabled.
+    </p>
+  </noscript>
+
+  <!-- Classic scripts (no bundler, no modules) so the game also runs by double-clicking index.html. Order matters. -->
+  <script src="js/config.js"></script>
+  <script src="js/utils/dom.js"></script>
+  <script src="js/utils/username.js"></script>
+  <script src="js/utils/ranking.js"></script>
+
+  <script src="js/storage/Storage.js"></script>
+  <script src="js/storage/PlayerStorage.js"></script>
+  <script src="js/storage/LeaderboardStorage.js"></script>
+  <script src="js/storage/SettingsStorage.js"></script>
+  <script src="js/storage/BackupService.js"></script>
+
+  <script src="js/gfx/sprites.js"></script>
+  <script src="js/audio/SoundManager.js"></script>
+
+  <script src="js/game/GameLoop.js"></script>
+  <script src="js/game/Input.js"></script>
+  <script src="js/game/Bird.js"></script>
+  <script src="js/game/Pipe.js"></script>
+  <script src="js/game/Collision.js"></script>
+  <script src="js/game/ParticleSystem.js"></script>
+  <script src="js/game/Background.js"></script>
+  <script src="js/game/Game.js"></script>
+
+  <script src="js/ui/widgets.js"></script>
+  <script src="js/ui/Toast.js"></script>
+  <script src="js/ui/Dialog.js"></script>
+  <script src="js/ui/Fullscreen.js"></script>
+  <script src="js/ui/Intro.js"></script>
+  <script src="js/ui/StartScreen.js"></script>
+  <script src="js/ui/Leaderboard.js"></script>
+  <script src="js/ui/Search.js"></script>
+  <script src="js/ui/Hud.js"></script>
+  <script src="js/ui/GameOver.js"></script>
+  <script src="js/ui/Celebration.js"></script>
+  <script src="js/ui/AdminPanel.js"></script>
+  <script src="js/ui/ErrorScreen.js"></script>
+
+  <script src="js/app/App.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
